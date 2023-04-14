@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% block title %}
+  Авторы, на которых Вы подписаны
+{% endblock title %}
+{% block main_head %}
+  Авторы, на которых Вы подписаны
+{% endblock main_head %}
+{% block content %}
+  {% include 'includes/switcher.html' %}
+  {% for post in page_obj %}
+    {% include "includes/post.html" with grouplink=True %}
+    {% if not forloop.last %}<hr>{% endif %}
+  {% endfor %}
+  {% include "includes/paginator.html" %}
+{% endblock content %}
