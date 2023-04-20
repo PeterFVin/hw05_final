@@ -13,7 +13,6 @@ ALLOWED_HOSTS = [
     'testserver',
 ]
 
-# fmt: off
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -27,7 +26,6 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'sorl.thumbnail',
 ]
-# fmt: on
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -106,9 +104,9 @@ LOGIN_URL = 'users:login'
 
 LOGIN_REDIRECT_URL = 'posts:index'
 
-NAME_STRING_LIMIT = 10
+MODEL_STR_REPRESENTATION_LIMIT = 10
 
-NUM_POSTS_ON_PAGE = 10
+NUM_OBJ_ON_PAGE = 10
 
 MEDIA_URL = '/media/'
 

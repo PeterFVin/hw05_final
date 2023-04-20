@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db import models
+from django.db import migrations, models
 
 User = get_user_model()
 
@@ -44,14 +44,13 @@ class Post(models.Model):
         default_related_name = 'posts'
 
     def __str__(self) -> str:
-        return self.text[: settings.NAME_STRING_LIMIT]
+        return self.text[:settings.MODEL_STR_REPRESENTATION_LIMIT]  # fmt: skip
 
 
 class Comment(models.Model):
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
-        related_name='comments',
         verbose_name='комментарий',
     )
     text = models.TextField(
@@ -61,10 +60,15 @@ class Comment(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='comments',
         verbose_name='автор',
     )
     created = models.DateTimeField('дата комментария', auto_now_add=True)
+
+    class Meta:
+        default_related_name = 'comments'
+
+    def __str__(self) -> str:
+        return self.text[:settings.MODEL_STR_REPRESENTATION_LIMIT]  # fmt: skip
 
 
 class Follow(models.Model):
@@ -80,3 +84,47 @@ class Follow(models.Model):
         related_name='following',
         verbose_name='автор',
     )
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=('user', 'author'),
+                name='unique_follow',
+            ),
+            models.CheckConstraint(
+                check=models.Q(user=models.F('author')),
+                name='posts_follow_prevent_self_follow',
+            ),
+        )
+
+    def __str__(self) -> str:
+        return f' Подписка на {self.author}'
+
+
+def forwards_func(apps, schema_editor):
+    Follow = apps.get_model("posts", "Follow")
+    db_alias = schema_editor.connection.alias
+    Follow.objects.using(db_alias).filter(
+        from_user=models.F("to_user")
+    ).delete()
+
+
+class Migration(migrations.Migration):
+    dependencies = [
+        ('posts', '0008_auto_20230418_2223'),
+    ]
+
+    operations = [
+        migrations.RunPython(
+            code=forwards_func,
+            reverse_code=migrations.RunPython.noop,
+            elidable=True,
+        ),
+        migrations.AddConstraint(
+            model_name="follow",
+            constraint=models.CheckConstraint(
+                check=models.Q(_negated=True, from_user=models.F("author")),
+                name="posts_follow_prevent_self_follow",
+            ),
+        ),
+    ]

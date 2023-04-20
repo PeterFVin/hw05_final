@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from posts.models import Group, Post
+from posts.models import Comment, Follow, Group, Post
 from yatube.admin import BaseAdmin
 
 
@@ -39,4 +39,44 @@ class GroupAdmin(BaseAdmin):
         'title',
         'slug',
         'description',
+    )
+
+
+@admin.register(Comment)
+class CommentAdmin(BaseAdmin):
+    list_display = (
+        'pk',
+        'post',
+        'text',
+        'author',
+        'created',
+    )
+    search_fields = (
+        'post',
+        'text',
+    )
+    fields = (
+        'pk',
+        'post',
+        'text',
+        'author',
+        'created',
+    )
+
+
+@admin.register(Follow)
+class FollowAdmin(BaseAdmin):
+    list_display = (
+        'pk',
+        'user',
+        'author',
+    )
+    search_fields = (
+        'user',
+        'author',
+    )
+    fields = (
+        'pk',
+        'user',
+        'author',
     )

@@ -45,7 +45,7 @@ def profile(request: HttpRequest, username: str) -> HttpResponse:
     following = (
         request.user.is_authenticated
         and request.user != author
-        and author.following.filter(user=request.user, author=author)
+        and author.following.filter(user=request.user, author=author).exists()
     )
     return render(
         request,
@@ -64,11 +64,10 @@ def profile(request: HttpRequest, username: str) -> HttpResponse:
 def post_detail(request: HttpRequest, pk: int) -> HttpResponse:
     post = get_object_or_404(Post, pk=pk)
     form = CommentForm(request.POST or None)
-    comments = post.comments.all()
     return render(
         request,
         'posts/post_detail.html',
-        {'post': post, 'form': form, 'comments': comments},
+        {'post': post, 'form': form},
     )
 
 
@@ -94,7 +93,6 @@ def post_create(request: HttpRequest) -> HttpResponse:
             {'form': form},
         )
     form.instance.author = request.user
-    form.instance.published_date = datetime.now()
     form.save()
     return redirect('posts:profile', request.user)
 
@@ -107,11 +105,9 @@ def post_edit(request: HttpRequest, pk: int) -> HttpResponse:
         files=request.FILES or None,
         instance=post,
     )
-    if request.user != post.author:
-        return redirect('posts:post_detail', pk)
     if form.is_valid():
         form.save()
-        return redirect('posts:post_detail', pk)
+    return redirect('posts:post_detail', pk)
 
     return render(
         request,
@@ -146,6 +142,6 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
-    author = get_object_or_404(User, username=username)
-    Follow.objects.filter(user=request.user, author=author).delete()
+    follow = get_object_or_404(User, author__username=request.user)
+    follow.delete()
     return redirect('posts:profile', username=username)

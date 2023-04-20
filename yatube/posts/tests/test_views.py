@@ -7,10 +7,10 @@ from django.core.cache import cache
 from django.test import Client
 from django.urls import reverse
 
-from core.test_utils import PostsTest
+from core.tests.test_utils import PostsTest
 from posts.models import Follow, Post, User
 
-PAGINATOR_NUM_POSTS = settings.NUM_POSTS_ON_PAGE + 2
+PAGINATOR_NUM_POSTS = settings.NUM_OBJ_ON_PAGE + 2
 
 
 class ViewTest(PostsTest):
@@ -187,10 +187,10 @@ class PaginatorTest(PostsTest):
     def test_paginator(self):
         """Проверка пагинатора на страницах index, group_list, profile."""
 
-        pages_num = ceil(PAGINATOR_NUM_POSTS / settings.NUM_POSTS_ON_PAGE)
+        pages_num = ceil(PAGINATOR_NUM_POSTS / settings.NUM_OBJ_ON_PAGE)
 
         num_posts_last_page = (
-            PAGINATOR_NUM_POSTS - settings.NUM_POSTS_ON_PAGE * (pages_num - 1)
+            PAGINATOR_NUM_POSTS - settings.NUM_OBJ_ON_PAGE * (pages_num - 1)
         )
 
         posts = [
@@ -224,5 +224,5 @@ class PaginatorTest(PostsTest):
                     else:
                         self.assertEqual(
                             len(page_obj.object_list),
-                            settings.NUM_POSTS_ON_PAGE,
+                            settings.NUM_OBJ_ON_PAGE,
                         )

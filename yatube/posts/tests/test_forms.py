@@ -4,28 +4,26 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from faker import Faker
 
-from core.test_utils import PostsTest
+from core.tests.test_utils import PostsTest
 from posts.models import Comment, Group, Post
+from posts.tests.common import image
+
+fake = Faker()
 
 
 class FormTest(PostsTest):
     def test_post_create_form(self):
         """При отправке формы при создании поста создается запись в БД."""
-        fake_data = Faker()
-        test_image = fake_data.image()
-        uploaded_image = SimpleUploadedFile(
-            name='testimage.jpg',
-            content=test_image,
-            content_type='image/jpg',
-        )
+        test_image = fake.image()
+        uploaded_image = image(test_image)
         data = {
             'group': self.group.id,
-            'text': fake_data.text(),
+            'text': fake.text(),
             'image': uploaded_image,
         }
 
         self.author_client.post(
-            reverse(self.ROUTES[5]['reverse']),
+            reverse('posts:post_create'),
             data=data,
             follow=True,
         )
@@ -40,14 +38,13 @@ class FormTest(PostsTest):
 
     def test_post_create_form_guest(self):
         """При отправке формы без логина не создается запись в БД."""
-        fake_data = Faker()
         data = {
             'group': self.group.id,
-            'text': fake_data.text(),
+            'text': fake.text(),
         }
 
         self.client.post(
-            reverse(self.ROUTES[5]['reverse']),
+            reverse('posts:post_create'),
             data=data,
             follow=True,
         )
@@ -57,33 +54,28 @@ class FormTest(PostsTest):
 
     def test_post_edit_form(self):
         """Отправка формы при редактировании поста создается запись в БД."""
-        fake_data = Faker()
-        test_image = fake_data.image()
-        uploaded_image = SimpleUploadedFile(
-            name='testimage.jpg',
-            content=test_image,
-            content_type='image/jpg',
-        )
+        test_image = fake.image()
+        uploaded_image = image(test_image)
         post = Post.objects.create(
             author=self.user,
             group=self.group,
-            text=fake_data.text(),
+            text=fake.text(),
         )
         edited_group = Group.objects.create(
-            title=fake_data.first_name(),
-            slug=fake_data.slug(),
-            description=fake_data.text(),
+            title=fake.first_name(),
+            slug=fake.slug(),
+            description=fake.text(),
         )
 
         data = {
             'group': edited_group.id,
-            'text': fake_data.text(),
+            'text': fake.text(),
             'image': uploaded_image,
         }
 
         self.author_client.post(
             reverse(
-                self.ROUTES[4]['reverse'],
+                'posts:post_edit',
                 kwargs={'pk': f'{post.id}'},
             ),
             data=data,
@@ -101,26 +93,25 @@ class FormTest(PostsTest):
 
     def test_post_edit_form_guest(self):
         """При отправке формы без логина не меняется запись в БД."""
-        fake_data = Faker()
         post = Post.objects.create(
             author=self.user,
             group=self.group,
             text='текст не изменился',
         )
         edited_group = Group.objects.create(
-            title=fake_data.first_name(),
-            slug=fake_data.slug(),
-            description=fake_data.text(),
+            title=fake.first_name(),
+            slug=fake.slug(),
+            description=fake.text(),
         )
 
         data = {
             'group': edited_group.id,
-            'text': fake_data.text(),
+            'text': fake.text(),
         }
 
         self.client.post(
             reverse(
-                self.ROUTES[4]['reverse'],
+                'posts:post_edit',
                 kwargs={'pk': f'{post.id}'},
             ),
             data=data,
@@ -133,27 +124,26 @@ class FormTest(PostsTest):
 
     def test_post_edit_form_not_author(self):
         """При отправке формы не автором поста не меняется запись в БД."""
-        fake_data = Faker()
         post = Post.objects.create(
             author=self.user,
             group=self.group,
             text='текст не изменился',
         )
         edited_group = Group.objects.create(
-            title=fake_data.first_name(),
-            slug=fake_data.slug(),
-            description=fake_data.text(),
+            title=fake.first_name(),
+            slug=fake.slug(),
+            description=fake.text(),
         )
 
         data = {
             'group': edited_group.id,
-            'text': fake_data.text(),
+            'text': fake.text(),
         }
 
         self.authorized_client.post(
             reverse(
-                self.ROUTES[4]['reverse'],
-                kwargs={'pk': f'{post.id}'},
+                'posts:post_edit',
+                kwargs={'pk': post.id},
             ),
             data=data,
             follow=True,
@@ -165,12 +155,10 @@ class FormTest(PostsTest):
 
     def test_comment_form_authorized(self):
         """При отправке комментария под логином добавляется запись в БД."""
-        fake_data = Faker()
         data = {
             'post': self.post,
             'group': self.group.id,
-            'text': fake_data.text(),
-            'author': self.user,
+            'text': fake.text(),
         }
 
         self.authorized_client.post(
@@ -183,12 +171,10 @@ class FormTest(PostsTest):
 
     def test_comment_form_guest(self):
         """При отправке комментария без логина не добавляется запись в БД."""
-        fake_data = Faker()
         data = {
             'post': self.post,
             'group': self.group.id,
-            'text': fake_data.text(),
-            'author': self.user,
+            'text': fake.text(),
         }
 
         self.client.post(
