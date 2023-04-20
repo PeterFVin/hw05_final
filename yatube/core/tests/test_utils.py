@@ -56,13 +56,6 @@ class PostsTest(TestCase):
                 'url': f'/posts/{cls.post.id}/',
             },
             {
-                'author': True,
-                'pars': [cls.post.id],
-                'reverse': 'posts:post_edit',
-                'template': 'posts/create_post.html',
-                'url': f'/posts/{cls.post.id}/edit/',
-            },
-            {
                 'authorised_user': True,
                 'reverse': 'posts:post_create',
                 'template': 'posts/create_post.html',

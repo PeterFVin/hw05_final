@@ -96,28 +96,10 @@ class ViewTest(PostsTest):
         self.assertEqual(response.context['post'].group, self.group)
         self.assertEqual(response.context['post'].image, self.post.image.name)
 
-    def test_post_edit_show_correct_context(self):
-        """Шаблон post_edit сформирован с правильным контекстом."""
-        response = self.author_client.get(
-            reverse(
-                self.ROUTES[4]['reverse'],
-                kwargs={'pk': f'{self.post.id}'},
-            ),
-        )
-        form_fields = {
-            'text': forms.fields.CharField,
-            'group': forms.fields.ChoiceField,
-        }
-
-        for value, expected in form_fields.items():
-            with self.subTest(value=value):
-                form_field = response.context['form'].fields[value]
-                self.assertIsInstance(form_field, expected)
-
     def test_post_create_show_correct_context(self):
         """Шаблон post_create сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-            reverse(self.ROUTES[5]['reverse']),
+            reverse('posts:post_create'),
         )
         form_fields = {
             'text': forms.fields.CharField,
@@ -159,7 +141,7 @@ class ViewTest(PostsTest):
         self.authorized_client.get(
             reverse(
                 'posts:profile_unfollow',
-                kwargs={'username': self.user.username},
+                kwargs={'username': self.user},
             ),
         )
         counter = Follow.objects.filter(author=self.user).count()

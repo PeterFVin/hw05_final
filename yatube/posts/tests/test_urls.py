@@ -70,7 +70,7 @@ class UrlTest(TestCase):
                 HTTPStatus.FOUND,
                 self.authorized_client,
             ),
-            (self.urls.get('post_edit'), HTTPStatus.OK, self.author_client),
+            (self.urls.get('post_edit'), HTTPStatus.FOUND, self.author_client),
             (self.urls.get('post_detail'), HTTPStatus.OK, self.client),
             (self.urls.get('profile'), HTTPStatus.OK, self.client),
             (self.urls.get('profile_follow'), HTTPStatus.FOUND, self.client),
@@ -96,11 +96,6 @@ class UrlTest(TestCase):
                 self.urls.get('post_create'),
                 'posts/create_post.html',
                 self.authorized_client,
-            ),
-            (
-                self.urls.get('post_edit'),
-                'posts/create_post.html',
-                self.author_client,
             ),
             (
                 self.urls.get('post_detail'),

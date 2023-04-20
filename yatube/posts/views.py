@@ -107,16 +107,6 @@ def post_edit(request: HttpRequest, pk: int) -> HttpResponse:
         form.save()
     return redirect('posts:post_detail', pk)
 
-    return render(
-        request,
-        'posts/create_post.html',
-        {
-            'post': post,
-            'form': form,
-            'is_edit': True,
-        },
-    )
-
 
 @login_required
 def follow_index(request: HttpRequest) -> HttpResponse:
@@ -140,6 +130,6 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
-    follow = get_object_or_404(User, author__username=request.user)
+    follow = get_object_or_404(Follow, user=request.user, author__username=username)
     follow.delete()
     return redirect('posts:profile', username=username)

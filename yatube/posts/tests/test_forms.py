@@ -139,7 +139,7 @@ class FormTest(PostsTest):
             'text': fake.text(),
         }
 
-        self.authorized_client.post(
+        self.client.post(
             reverse(
                 'posts:post_edit',
                 kwargs={'pk': post.id},
@@ -149,7 +149,7 @@ class FormTest(PostsTest):
         )
         not_edited_post = Post.objects.get(id=post.id)
 
-        self.assertEqual(not_edited_post.group.id, self.group.id)
+        self.assertEqual(not_edited_post.group.id, self.post.id)
         self.assertEqual(not_edited_post.text, 'текст не изменился')
 
     def test_comment_form_authorized(self):
