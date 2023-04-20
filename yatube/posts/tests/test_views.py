@@ -149,8 +149,9 @@ class ViewTest(PostsTest):
         """Авторизованный пользователь может подписываться и отписываться."""
         self.authorized_client.get(
             reverse(
-                'posts:profile_follow', kwargs={'username': self.user.username}
-            )
+                'posts:profile_follow',
+                kwargs={'username': self.user.username},
+            ),
         )
         counter = Follow.objects.filter(author=self.user).count()
         self.assertEqual(counter, 1)
@@ -159,7 +160,7 @@ class ViewTest(PostsTest):
             reverse(
                 'posts:profile_unfollow',
                 kwargs={'username': self.user.username},
-            )
+            ),
         )
         counter = Follow.objects.filter(author=self.user).count()
         self.assertEqual(counter, 0)

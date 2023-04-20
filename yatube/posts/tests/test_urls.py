@@ -33,16 +33,16 @@ class UrlTest(TestCase):
             'post_detail': reverse('posts:post_detail', args=(cls.post.id,)),
             'profile': reverse('posts:profile', args=(cls.user,)),
             'profile_follow': reverse(
-                'posts:profile_follow', args=(cls.user,)
+                'posts:profile_follow', args=(cls.user,),
             ),
             'profile_unfollow': reverse(
-                'posts:profile_unfollow', args=(cls.user,)
+                'posts:profile_unfollow', args=(cls.user,),
             ),
             'missing': '/unexisting_page/',
         }
 
         cls.authorized_user = User.objects.create_user(
-            username='authorized_user'
+            username='authorized_user',
         )
 
         cls.authorized_client = Client()

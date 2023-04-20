@@ -105,7 +105,7 @@ def forwards_func(apps, schema_editor):
     Follow = apps.get_model("posts", "Follow")
     db_alias = schema_editor.connection.alias
     Follow.objects.using(db_alias).filter(
-        from_user=models.F("to_user")
+        from_user=models.F("to_user"),
     ).delete()
 
 

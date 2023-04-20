@@ -28,7 +28,10 @@ class PostModelTest(TestCase):
     def test_post_model_have_correct_object_names(self):
         """Проверяем, что у модели post корректно работает __str__."""
         self.assertEqual(
-            str(self.post), self.post.text[:settings.MODEL_STR_REPRESENTATION_LIMIT]  # fmt: skip
+            str(self.post),
+            self.post.text[
+            :settings.MODEL_STR_REPRESENTATION_LIMIT
+            ],  # fmt: skip
         )
 
     def test_verbose_name(self):
