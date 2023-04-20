@@ -30,7 +30,7 @@ class PostModelTest(TestCase):
         self.assertEqual(
             str(self.post),
             self.post.text[
-            :settings.MODEL_STR_REPRESENTATION_LIMIT
+                :settings.MODEL_STR_REPRESENTATION_LIMIT
             ],  # fmt: skip
         )
 
