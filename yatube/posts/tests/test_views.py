@@ -99,9 +99,9 @@ class ViewTest(PostsTest):
     def test_post_edit_show_correct_context(self):
         """Шаблон post_edit сформирован с правильным контекстом."""
         response = self.author_client.get(
-            reverse(self.ROUTES[5]['reverse'],
-                    kwargs={'pk': f'{self.post.id}'}
-                    ),
+            reverse(
+                self.ROUTES[5]['reverse'], kwargs={'pk': f'{self.post.id}'}
+            ),
         )
         form_fields = {
             'text': forms.fields.CharField,

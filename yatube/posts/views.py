@@ -107,10 +107,10 @@ def post_edit(request: HttpRequest, pk: int) -> HttpResponse:
         form.save()
         return redirect('posts:post_detail', pk)
     return render(
-            request,
-            'posts/create_post.html',
-            {'form': form, 'user': post.author, 'post': post}
-        )
+        request,
+        'posts/create_post.html',
+        {'form': form, 'user': post.author, 'post': post},
+    )
 
 
 @login_required
