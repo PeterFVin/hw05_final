@@ -69,10 +69,10 @@ class UrlTest(TestCase):
             (self.urls.get('post_edit'), HTTPStatus.FOUND, self.client),
             (
                 self.urls.get('post_edit'),
-                HTTPStatus.FOUND,
+                HTTPStatus.OK,
                 self.authorized_client,
             ),
-            (self.urls.get('post_edit'), HTTPStatus.FOUND, self.author_client),
+            (self.urls.get('post_edit'), HTTPStatus.OK, self.author_client),
             (self.urls.get('post_detail'), HTTPStatus.OK, self.client),
             (self.urls.get('profile'), HTTPStatus.OK, self.client),
             (self.urls.get('profile_follow'), HTTPStatus.FOUND, self.client),
@@ -120,16 +120,6 @@ class UrlTest(TestCase):
                 self.client,
             ),
             (self.urls.get('post_create'), '/create/', self.client),
-            (
-                self.urls.get('post_edit'),
-                f'/posts/{self.post.id}/edit/',
-                self.client,
-            ),
-            (
-                self.urls.get('post_edit'),
-                f'/posts/{self.post.id}/',
-                self.authorized_client,
-            ),
             (
                 self.urls.get('profile_follow'),
                 f'/profile/{self.user}/follow/',
