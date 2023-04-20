@@ -99,11 +99,19 @@ class ViewTest(PostsTest):
     def test_post_edit_show_correct_context(self):
         """Шаблон post_edit сформирован с правильным контекстом."""
         response = self.author_client.get(
-            reverse('posts:post_edit',
+            reverse(self.ROUTES[5]['reverse'],
                     kwargs={'pk': f'{self.post.id}'}
                     ),
         )
-        self.assertEqual(response.url, '/posts/1/')
+        form_fields = {
+            'text': forms.fields.CharField,
+            'group': forms.fields.ChoiceField,
+        }
+
+        for value, expected in form_fields.items():
+            with self.subTest(value=value):
+                form_field = response.context['form'].fields[value]
+                self.assertIsInstance(form_field, expected)
 
     def test_post_create_show_correct_context(self):
         """Шаблон post_create сформирован с правильным контекстом."""

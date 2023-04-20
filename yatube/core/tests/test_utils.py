@@ -61,6 +61,13 @@ class PostsTest(TestCase):
                 'template': 'posts/create_post.html',
                 'url': '/create/',
             },
+            {
+                'author': True,
+                'pars': [cls.post.id],
+                'reverse': 'posts:post_edit',
+                'template': 'posts/create_post.html',
+                'url': f'/posts/{cls.post.id}/edit/',
+            },
         )
 
     def setUp(self):
