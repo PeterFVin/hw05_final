@@ -96,6 +96,15 @@ class ViewTest(PostsTest):
         self.assertEqual(response.context['post'].group, self.group)
         self.assertEqual(response.context['post'].image, self.post.image.name)
 
+    def test_post_edit_show_correct_context(self):
+        """Шаблон post_edit сформирован с правильным контекстом."""
+        response = self.author_client.get(
+            reverse('posts:post_edit',
+                    kwargs={'pk': f'{self.post.id}'}
+                    ),
+        )
+        self.assertEqual(response.url, '/posts/1/')
+
     def test_post_create_show_correct_context(self):
         """Шаблон post_create сформирован с правильным контекстом."""
         response = self.authorized_client.get(
